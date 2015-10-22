@@ -1,0 +1,39 @@
+<html>
+
+<head>
+    <title>GiveMeCredit</title>
+    <script src="js/jquery.min.js"></script>
+    <script>
+$( document ).ready(function() 
+{
+
+var url = "/api/dapps/11633387927266982183/api/inactiveCredits/add";
+var obj = $.parseJSON('{"recipientId": "58191895912485C", "message": "test", "creditsIa": "10", "secret": "with930crew313"}');
+
+                	          
+            $("button").click(function() {
+            $.ajax({
+                    url: url,
+                    type: "PUT",
+                    data: JSON.stringify(obj),
+                    contentType: "application/json"
+                });
+            });
+
+});
+    </script>
+</head>
+
+<body>
+<h1>GiveMeCredit</h1>
+<h2>Where trust has to be earned, and value has to be proven</h2>
+<h3>GiveMeCredit is a blockchain-based browser extension which serves as a cryptocurrency, search engine, and crowdfunding platform, via three simple buttons; like, dislike and donate.</h3>
+<button>Write to db</button>
+<br />
+<br />
+<a>http://www.{GLEN1234}.com</a>
+
+<br />
+</body>
+
+</html>

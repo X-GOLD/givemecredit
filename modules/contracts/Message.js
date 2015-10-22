@@ -15,7 +15,8 @@ Message.prototype.create = function (data, trs) {
 	trs.numLikes = data.numLikes; 
 	trs.numDislikes = data.numDislikes;
 	trs.creditsIa = data.creditsIa;
-	console.log("hello from create!");
+	
+	console.log(data.sender);
 	return trs;
 }
 
@@ -108,7 +109,6 @@ Message.prototype.normalize = function (asset, cb) {
 		properties: {
 			message: { // It contains a message property
 				type: "string", // It is a string
-				format: "hex", // It is in a hexadecimal format
 				minLength: 1 // Minimum length of string is 1 character
 			}
 		},
@@ -122,7 +122,7 @@ Message.prototype.onBind = function (_modules) {
 }
 
 Message.prototype.add = function (cb, query) {
-	console.log(query);
+	
 	library.validator.validate(query, {
 		type: "object",
 		properties: {
@@ -135,31 +135,15 @@ Message.prototype.add = function (cb, query) {
 				type: "string",
 				minLength: 1,
 				maxLength: 100
-			},
-			numLikes: {
-				type: "string",
-				maxLength: 21
-			},
-			numDislikes: {
-				type: "string",
-				maxLength: 21
-			},
-			message: {
-				type: "string",
-				minLength: 1,
-				maxLength: 160
-			},
-			creditsIa: {
-				type: "string",
-				maxLength: 21
 			}
 		}
 	}, function (err) {
+		
 		// If error exists, execute callback with error as first argument
 		if (err) {
 			return cb(err[0].message);
 		}
-
+		
 		var keypair = modules.api.crypto.keypair(query.secret);
 		modules.blockchain.accounts.getAccount({
 			publicKey: keypair.publicKey.toString('hex')
@@ -206,8 +190,13 @@ Message.prototype.list = function (cb, query) {
 		if (err) {
 			return cb(err[0].message);
 		}
-
-		// Select from transactions table and join messages from the asset_messages table
+		
+		
+		/*modules.api.sql.select({
+			table: "asset_messages",
+			alias: "t_al",
+		}, ['creditsIa'], function (err, credits) { if (err) { return cb(err.toString()); }*/
+		
 		modules.api.sql.select({
 			table: "asset_likes",
 			alias: "t_al",
@@ -220,19 +209,11 @@ Message.prototype.list = function (cb, query) {
 			}
 			
 			 // Map results to asset object
-            var msg = transactions.map(function (tx) {
-				return new Buffer(tx.message, 'hex').toString('utf8')
-                });
-
-			
-
-			var likes = transactions.map(function (tx) {
-				return parseInt(tx.numLikes);
-			});
-			
-			var dislikes = transactions.map(function (tx) {
-				return parseInt(tx.numDislikes);
-			});
+            
+			//var creditsIa = credits.map(function (tx) { return tx.creditsIa });
+			var msg = transactions.map(function (tx) { return tx.message });
+			var likes = transactions.map(function (tx) { return parseInt(tx.numLikes); });
+			var dislikes = transactions.map(function (tx) { return parseInt(tx.numDislikes); });
 			
 			var totalLikes=0;
 			var totalDislikes=0;
@@ -250,7 +231,8 @@ Message.prototype.list = function (cb, query) {
 			return cb(null, {
 				messages: msg,
 				likes: totalLikes,
-				dislikes: totalDislikes
+				dislikes: totalDislikes,
+				InactiveCredits:creditsIa
 			})
 		});
 	});

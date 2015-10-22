@@ -73,10 +73,5 @@
     "path": "/messages/list",
     "method": "get",
     "handler" : "contracts.Message.list"
-  },
-  {
-    "path": "/inactiveCredits/add",
-    "method": "put",
-    "handler" : "contracts.inactiveCredits.add"
   }
 ]

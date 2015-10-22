@@ -222,13 +222,11 @@
 	  },
 	  {
 		"name": "numLikes",
-		"type": "String",
-		"length": 21
+		"type": "BigInt"
 	  },
 	  {
 		"name": "numDislikes",
-		"type": "String",
-		"length": 21
+		"type": "BigInt"
 	  },
 	  {
 		"name": "transactionId",
@@ -244,8 +242,7 @@
     "tableFields": [
 			{
 			"name": "creditsIa",
-            "type": "String",
-            "length": 21
+            "type": "BigInt"
 			},
        		{
             "name": "transactionId",

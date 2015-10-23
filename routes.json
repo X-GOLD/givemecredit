@@ -73,5 +73,10 @@
     "path": "/messages/list",
     "method": "get",
     "handler" : "contracts.Message.list"
+  },
+    {
+    "path": "/messages/credit",
+    "method": "put",
+    "handler" : "contracts.Message.credit"
   }
 ]

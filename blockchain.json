@@ -101,8 +101,16 @@
     			"type": "left outer",
     			"table": "asset_messages",
     			"alias": "tm",
-    				"on": {
-        		"t.id": "tm.transactionId"
+    			"on": {
+        			"t.id": "tm.transactionId"
+    			}
+			},	
+			{
+    			"type": "left outer",
+    			"table": "credits",
+    			"alias": "cr",
+    			"on": {
+        			"t.id": "cr.transactionId"
     		}
 		}
 		]
@@ -247,6 +255,27 @@
 	  		},
 			{
 			"name": "creditsIa",
+            "type": "BigInt"
+			},
+       		{
+            "name": "transactionId",
+            "type": "String",
+            "length": 21
+       		}
+		]
+	},
+	 {
+    "table": "credits",
+    "alias": "cr",
+    "type": "table",
+    "tableFields": [
+	  		{
+			"name": "url",
+			"type": "String",
+			"length": 320
+	  		},
+			{
+			"name": "credits",
             "type": "BigInt"
 			},
        		{

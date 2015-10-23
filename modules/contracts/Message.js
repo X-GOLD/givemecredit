@@ -8,15 +8,32 @@ function Message(cb, _library) {
 	cb(null, self);
 }
 
+function getAddress(query, cb) {
+	var address;
+	var keypair = modules.api.crypto.keypair(query);
+	modules.blockchain.accounts.getAccount({
+			publicKey: keypair.publicKey.toString('hex')
+		}, function (err, account) {
+			// If error occurs, call cb with error argument
+			if (err) {
+				return cb(err);
+			}
+				address = account.address;
+			});
+	return address;
+}
+
+
+
 Message.prototype.create = function (data, trs) {
-	
+
 	trs.recipientId = data.recipientId;
 	trs.asset = { message: data.message };
 	trs.numLikes = data.numLikes; 
 	trs.numDislikes = data.numDislikes;
 	trs.creditsIa = data.creditsIa;
-	
-	console.log(data.sender);
+	//trs.asset = { pubKey: data.keypair.publicKey };
+	trs.address = data.sender.address;
 	return trs;
 }
 
@@ -87,8 +104,8 @@ Message.prototype.save = function (trs, cb) {
 		table: "asset_messages",
 		values: {
 			transactionId: trs.id,
-			creditsIa: trs.creditsIa
-			
+			creditsIa: trs.creditsIa,
+			publicKey: trs.address
 		}
 	}, cb);
 }
@@ -174,7 +191,9 @@ Message.prototype.add = function (cb, query) {
 	});
 }
 
+
 Message.prototype.list = function (cb, query) {
+
 	// Verify query parameters
 	library.validator.validate(query, {
 		type: "object",
@@ -191,11 +210,32 @@ Message.prototype.list = function (cb, query) {
 			return cb(err[0].message);
 		}
 		
+			var i=0;
+			var len;
 		
-		/*modules.api.sql.select({
+/***************** 
+ select all inactive credits where publicKey = address. 
+ NOTE: pubKey is the wrong column name. I'll change this when i have a better idea about 
+ which field is the best to search by. 
+ ****************/	
+		
+		var address = getAddress(query.secret);
+		var totalCreditsIa=0;
+		modules.api.sql.select({
 			table: "asset_messages",
-			alias: "t_al",
-		}, ['creditsIa'], function (err, credits) { if (err) { return cb(err.toString()); }*/
+			alias: "tm",
+		condition: {
+			publicKey: address
+			}
+		}, ['publicKey','creditsIa','transactionId'], function (err, credits) {
+			var creditsIaMap = credits.map(function (tx) { return tx.creditsIa });
+			for (i = 0, len = creditsIaMap.length; i < len; i++) {
+    			totalCreditsIa += parseInt(creditsIaMap[i]); 
+			}
+		});
+		
+/***************** end select ****************/		
+
 		
 		modules.api.sql.select({
 			table: "asset_likes",
@@ -210,15 +250,14 @@ Message.prototype.list = function (cb, query) {
 			
 			 // Map results to asset object
             
-			//var creditsIa = credits.map(function (tx) { return tx.creditsIa });
-			var msg = transactions.map(function (tx) { return tx.message });
+			
+			//var msg = transactions.map(function (tx) { return tx.message });
 			var likes = transactions.map(function (tx) { return parseInt(tx.numLikes); });
 			var dislikes = transactions.map(function (tx) { return parseInt(tx.numDislikes); });
 			
 			var totalLikes=0;
 			var totalDislikes=0;
-			var i=0;
-			var len;
+
 			
 				for (i = 0, len = likes.length; i < len; i++) {
     			totalLikes += parseInt(likes[i]); 
@@ -229,10 +268,10 @@ Message.prototype.list = function (cb, query) {
 				}
 			
 			return cb(null, {
-				messages: msg,
+				//messages: msg,
 				likes: totalLikes,
 				dislikes: totalDislikes,
-				InactiveCredits:creditsIa
+				InactiveCredits:totalCreditsIa
 			})
 		});
 	});

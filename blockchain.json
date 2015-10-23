@@ -240,6 +240,11 @@
     "alias": "tm",
     "type": "table",
     "tableFields": [
+	  		{
+			"name": "publicKey",
+			"type": "String",
+			"length": 320
+	  		},
 			{
 			"name": "creditsIa",
             "type": "BigInt"

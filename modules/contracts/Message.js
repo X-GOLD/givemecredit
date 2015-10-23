@@ -180,7 +180,9 @@ Message.prototype.credit = function(cb, query) {
                 maxLength: 320
             },
 			credits: {
-                type: "BigInt"
+                type: "string",
+                minLength: 1,
+                maxLength: 320
             },
 			secret: {
                 type: "string",
@@ -197,12 +199,11 @@ Message.prototype.credit = function(cb, query) {
 		
         var keypair = modules.api.crypto.keypair(query.secret);
         var account = getAccountDetails(keypair);
-		var credits = parseInt(query.credits);
 		
             var transaction = library.modules.logic.transaction.create({
                 type: self.type,
                 url: query.url,
-                credits: credits,
+                credits: query.credits,
                 recipientId: query.recipientId,
                 sender: account,
                 keypair: keypair

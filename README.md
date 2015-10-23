@@ -1,3 +1,4 @@
 <h1>GiveMeCredit</h1>
-<h2>Where trust has to be earned, and value has to be proven</h2>
-<h3>GiveMeCredit is a blockchain-based browser extension which serves as a cryptocurrency, search engine, and crowdfunding platform, via three simple buttons; like, dislike and donate.</h3>
+<h2>A monatary system where trust has to be earned, and value has to be proven</h2>
+<h4>GiveMeCredit is a blockchain-based browser extension which serves as a cryptocurrency, search engine, and crowdfunding platform, via three simple buttons; like, dislike and donate.</h4>
+<p>Money is typically defined as a medium of exchange and a store of value. Bitcoin has given us a boilerplate for establishing an almost immutable record of ownership. As such, Bitcoin, or specifically, “the blockchain”, serves us a well as a store of value. However, as an everyday medium of exchange, it falls short on one, very important attribute, and that is, accessibility. It is not the medium of exchange itself, but the value that we exchange that gives us wealth. When you have a monetary system that is only accessible to a select few, it discourages productivity and thus has a detrimental effect on the availability and affordability of products and services. We need a currency where there are practically no barriers to entry, whilst still maintaining discipline. GiveMeCredit is that solution.</p>

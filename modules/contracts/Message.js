@@ -157,6 +157,36 @@ Message.prototype.onBind = function(_modules) {
 /***** this function accepts the credits from the ajax request ******/
 
 Message.prototype.credit = function(cb, query) {
+	
+	library.validator.validate(query, {
+        type: "object",
+        properties: {
+            recipientId: {
+                type: "string",
+                minLength: 1,
+                maxLength: 21
+            },
+            secret: {
+                type: "string",
+                minLength: 1,
+                maxLength: 100
+            },
+			url: {
+                type: "string",
+                minLength: 1,
+                maxLength: 320
+            },
+			credits: {
+                type: "BigInt"
+            }
+        }
+    }, function(err) {
+
+        // If error exists, execute callback with error as first argument
+        if (err) {
+            return cb(err[0].message);
+        }
+	
         var keypair = modules.api.crypto.keypair(query.secret);
         var account = getAccountDetails(keypair);
 
@@ -171,6 +201,7 @@ Message.prototype.credit = function(cb, query) {
 
         console.log(transaction);
         modules.blockchain.transactions.processUnconfirmedTransaction(transaction, cb);
+	});
 }
 /***** end credit *****************************/
 

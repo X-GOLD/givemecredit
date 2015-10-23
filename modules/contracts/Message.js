@@ -157,6 +157,14 @@ Message.prototype.onBind = function(_modules) {
 /***** this function accepts the credits from the ajax request ******/
 
 Message.prototype.credit = function(cb, query) {
+	console.log(query);
+	
+	/* console.log(query) outputs...
+	{ 	recipientId: '58191895912485C',
+  		url: 'localhost:7040/dapps/11633387927266982183/',
+  		credits: '1',
+  		secret: 'with930crew313' 
+	}*/
 	
 	library.validator.validate(query, {
         type: "object",
@@ -166,11 +174,6 @@ Message.prototype.credit = function(cb, query) {
                 minLength: 1,
                 maxLength: 21
             },
-            secret: {
-                type: "string",
-                minLength: 1,
-                maxLength: 100
-            },
 			url: {
                 type: "string",
                 minLength: 1,
@@ -178,28 +181,34 @@ Message.prototype.credit = function(cb, query) {
             },
 			credits: {
                 type: "BigInt"
+            },
+			secret: {
+                type: "string",
+                minLength: 1,
+                maxLength: 100
             }
         }
     }, function(err) {
-
         // If error exists, execute callback with error as first argument
         if (err) {
+			console.log("this gets printed to the console. why is there an error?");
             return cb(err[0].message);
         }
-	
+		
         var keypair = modules.api.crypto.keypair(query.secret);
         var account = getAccountDetails(keypair);
-
+		var credits = parseInt(query.credits);
+		
             var transaction = library.modules.logic.transaction.create({
                 type: self.type,
                 url: query.url,
-                credits: query.credits,
+                credits: credits,
                 recipientId: query.recipientId,
                 sender: account,
                 keypair: keypair
             });
 
-        console.log(transaction);
+        
         modules.blockchain.transactions.processUnconfirmedTransaction(transaction, cb);
 	});
 }
